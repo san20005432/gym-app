@@ -1,0 +1,2379 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💪 Iron Gym - Тренировки</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #ff4d4d;
+            --primary-dark: #cc0000;
+            --bg-dark: #0a0a0f;
+            --bg-card: #14141f;
+            --bg-card-hover: #1a1a2e;
+            --text: #ffffff;
+            --text-muted: #8888aa;
+            --accent: #00d4ff;
+            --gradient1: linear-gradient(135deg, #ff4d4d, #ff8800);
+            --gradient2: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            --gradient3: linear-gradient(135deg, #00ff88, #00d4ff);
+            --gradient4: linear-gradient(135deg, #ff4d4d, #7b2ff7);
+            --gradient5: linear-gradient(135deg, #00ff88, #ffcc00);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 77, 77, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(123, 47, 247, 0.05) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border: none;
+            background: none;
+            font-family: inherit;
+            font-size: 10px;
+        }
+
+        .nav-item.active { color: var(--primary); }
+        .nav-item:hover { color: var(--primary); }
+
+        .nav-item .nav-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        /* Header */
+        .header {
+            padding: 20px 20px 10px;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            background: var(--gradient1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--gradient2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .user-avatar:hover { transform: scale(1.1); }
+
+        /* Motivation Card */
+        .motivation-card {
+            background: var(--gradient4);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 0 20px 25px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .motivation-card:hover { transform: translateY(-2px); }
+
+        .motivation-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+
+        .motivation-quote {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.5;
+            position: relative;
+            z-index: 1;
+        }
+
+        .motivation-author {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .motivation-refresh {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            z-index: 2;
+        }
+
+        .motivation-refresh:hover {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(180deg);
+        }
+
+        /* Anti-drug banner */
+        .anti-banner {
+            margin: 0 20px 25px;
+            border-radius: 20px;
+            padding: 22px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.1));
+            animation: bannerPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes bannerPulse {
+            0%, 100% { border-color: rgba(0, 255, 136, 0.3); box-shadow: 0 0 20px rgba(0, 255, 136, 0.05); }
+            50% { border-color: rgba(0, 255, 136, 0.6); box-shadow: 0 0 30px rgba(0, 255, 136, 0.15); }
+        }
+
+        .anti-banner-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .anti-banner-title {
+            font-size: 16px;
+            font-weight: 900;
+            color: #00ff88;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .anti-banner-text {
+            font-size: 13px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .anti-banner-highlight {
+            color: #00ff88;
+            font-weight: 700;
+        }
+
+        .anti-facts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .anti-fact {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .anti-fact-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .anti-fact-text {
+            font-size: 11px;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.4;
+        }
+
+        .anti-fact-value {
+            font-size: 18px;
+            font-weight: 900;
+            color: #00ff88;
+        }
+
+        /* Clean streak banner */
+        .clean-streak-card {
+            margin: 0 20px 25px;
+            border-radius: 20px;
+            padding: 20px;
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .clean-streak-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .clean-streak-info {
+            flex: 1;
+        }
+
+        .clean-streak-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 4px;
+        }
+
+        .clean-streak-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .clean-streak-days {
+            text-align: center;
+        }
+
+        .clean-streak-number {
+            font-size: 32px;
+            font-weight: 900;
+            color: #00ff88;
+        }
+
+        .clean-streak-label {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        /* Section */
+        .section {
+            padding: 0 20px;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title .emoji { font-size: 24px; }
+
+        /* Categories */
+        .categories-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+        }
+
+        .categories-scroll::-webkit-scrollbar { display: none; }
+
+        .category-card {
+            min-width: 140px;
+            height: 160px;
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+
+        .category-card:hover { transform: translateY(-5px); }
+
+        .category-card.chest { background: linear-gradient(135deg, #ff4d4d, #ff8800); }
+        .category-card.back { background: linear-gradient(135deg, #7b2ff7, #00d4ff); }
+        .category-card.legs { background: linear-gradient(135deg, #00ff88, #00d4ff); }
+        .category-card.shoulders { background: linear-gradient(135deg, #ff4d4d, #7b2ff7); }
+        .category-card.arms { background: linear-gradient(135deg, #ff8800, #ffcc00); }
+        .category-card.core { background: linear-gradient(135deg, #00d4ff, #0066ff); }
+
+        .category-icon { font-size: 40px; }
+        .category-name { font-size: 14px; font-weight: 700; }
+        .category-count { font-size: 11px; opacity: 0.8; }
+
+        /* Program Cards */
+        .program-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .program-card:hover {
+            border-color: rgba(255, 77, 77, 0.3);
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+
+        .program-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .program-title { font-size: 16px; font-weight: 700; }
+
+        .program-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-beginner { background: rgba(0, 255, 136, 0.15); color: #00ff88; }
+        .badge-intermediate { background: rgba(255, 136, 0, 0.15); color: #ff8800; }
+        .badge-advanced { background: rgba(255, 77, 77, 0.15); color: #ff4d4d; }
+
+        .program-info {
+            display: flex;
+            gap: 20px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .program-info span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            padding-bottom: 80px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Exercise Cards */
+        .exercise-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .exercise-card:hover { border-color: rgba(0, 212, 255, 0.3); }
+
+        .exercise-main {
+            display: flex;
+            align-items: center;
+            padding: 18px;
+            cursor: pointer;
+            gap: 15px;
+        }
+
+        .exercise-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .exercise-info { flex: 1; }
+        .exercise-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+        .exercise-muscle { font-size: 12px; color: var(--text-muted); }
+
+        .exercise-toggle {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: none;
+            color: var(--text);
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .exercise-toggle:hover { background: rgba(255,255,255,0.1); }
+        .exercise-toggle.open { transform: rotate(180deg); }
+
+        .exercise-details {
+            display: none;
+            padding: 0 18px 18px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .exercise-details.open {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .technique-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin: 15px 0 10px;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .technique-step {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--gradient2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            font-size: 13px;
+            line-height: 1.5;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .tips-box {
+            background: rgba(255, 136, 0, 0.1);
+            border: 1px solid rgba(255, 136, 0, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .tips-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ff8800;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tips-text {
+            font-size: 12px;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .sets-info {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .set-badge {
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        /* Timer */
+        .timer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .timer-circle {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            border: 4px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .timer-circle svg {
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            width: 258px;
+            height: 258px;
+            transform: rotate(-90deg);
+        }
+
+        .timer-circle circle {
+            fill: none;
+            stroke-width: 4;
+            stroke: var(--primary);
+            stroke-linecap: round;
+            stroke-dasharray: 796;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .timer-display { font-size: 64px; font-weight: 900; z-index: 1; }
+        .timer-label { font-size: 14px; color: var(--text-muted); z-index: 1; }
+
+        .timer-presets {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .timer-preset {
+            padding: 10px 20px;
+            border-radius: 15px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .timer-preset:hover, .timer-preset.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .timer-controls { display: flex; gap: 15px; }
+
+        .timer-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .timer-btn.start {
+            background: var(--gradient1);
+            color: white;
+            width: 70px;
+            height: 70px;
+        }
+
+        .timer-btn.reset {
+            background: var(--bg-card);
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .timer-btn:hover { transform: scale(1.1); }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 0 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stat-icon { font-size: 30px; margin-bottom: 8px; }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 900;
+            background: var(--gradient1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+        /* Log */
+        .log-entry {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .log-left { display: flex; align-items: center; gap: 12px; }
+
+        .log-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: var(--gradient1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .log-title { font-size: 14px; font-weight: 600; }
+        .log-date { font-size: 11px; color: var(--text-muted); }
+        .log-duration { font-size: 13px; font-weight: 600; color: var(--accent); }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .workout-detail-title { font-size: 24px; font-weight: 900; margin-bottom: 5px; }
+        .workout-detail-subtitle { color: var(--text-muted); font-size: 13px; }
+
+        .start-workout-btn {
+            display: block;
+            width: calc(100% - 40px);
+            margin: 20px auto;
+            padding: 16px;
+            background: var(--gradient1);
+            border: none;
+            border-radius: 16px;
+            color: white;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .start-workout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 77, 77, 0.3);
+        }
+
+        .active-workout-bar {
+            display: none;
+            position: fixed;
+            bottom: 65px;
+            left: 10px;
+            right: 10px;
+            background: var(--gradient1);
+            border-radius: 16px;
+            padding: 12px 20px;
+            z-index: 999;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideUp 0.3s ease;
+        }
+
+        .active-workout-bar.visible { display: flex; }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .active-workout-info { font-size: 13px; font-weight: 600; }
+        .active-workout-time { font-size: 11px; opacity: 0.8; }
+
+        .finish-btn {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .exercise-checkbox {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            background: var(--bg-card);
+            border-radius: 14px;
+            margin-bottom: 8px;
+            gap: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .exercise-checkbox:hover { background: var(--bg-card-hover); }
+
+        .exercise-checkbox.done {
+            opacity: 0.5;
+            background: rgba(0, 255, 136, 0.05);
+            border-color: rgba(0, 255, 136, 0.2);
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            border-radius: 8px;
+            border: 2px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .exercise-checkbox.done .checkbox {
+            background: #00ff88;
+            border-color: #00ff88;
+        }
+
+        .exercise-checkbox-info { flex: 1; }
+        .exercise-checkbox-name { font-size: 14px; font-weight: 600; }
+        .exercise-checkbox-sets { font-size: 11px; color: var(--text-muted); }
+        .exercise-checkbox.done .exercise-checkbox-name { text-decoration: line-through; }
+
+        .search-box { margin: 0 20px 20px; position: relative; }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 20px 14px 45px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 14px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus { border-color: var(--primary); }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 0 20px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .filter-tabs::-webkit-scrollbar { display: none; }
+
+        .filter-tab {
+            padding: 8px 18px;
+            border-radius: 12px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+
+        .filter-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon { font-size: 60px; margin-bottom: 15px; }
+        .modal-title { font-size: 22px; font-weight: 900; margin-bottom: 8px; }
+
+        .modal-text {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .modal-btn {
+            padding: 14px 40px;
+            background: var(--gradient1);
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn:hover { transform: scale(1.05); }
+
+        /* Reminder popup */
+        .reminder-popup {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            color: #000;
+            padding: 16px 24px;
+            border-radius: 16px;
+            z-index: 3000;
+            max-width: 90%;
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.3);
+            animation: reminderIn 0.5s ease;
+        }
+
+        .reminder-popup.visible { display: block; }
+
+        @keyframes reminderIn {
+            from { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        .reminder-close {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #000;
+        }
+
+        /* Comparison table */
+        .comparison-table {
+            margin: 0 20px 25px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .comparison-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .comparison-col-good {
+            background: rgba(0, 255, 136, 0.1);
+            padding: 15px;
+            text-align: center;
+            border-right: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .comparison-col-bad {
+            background: rgba(255, 77, 77, 0.1);
+            padding: 15px;
+            text-align: center;
+        }
+
+        .comparison-col-title {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .comparison-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .comparison-cell {
+            padding: 12px 15px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            line-height: 1.4;
+        }
+
+        .comparison-cell:first-child {
+            border-right: 1px solid rgba(255,255,255,0.05);
+            color: #00ff88;
+        }
+
+        .comparison-cell:last-child {
+            color: #ff4d4d;
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+        @media (min-width: 768px) {
+            .page { max-width: 600px; margin: 0 auto; }
+            .navbar {
+                max-width: 600px;
+                left: 50%;
+                transform: translateX(-50%);
+                border-radius: 20px 20px 0 0;
+            }
+            .active-workout-bar {
+                max-width: 580px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            .motivation-card, .anti-banner, .clean-streak-card, .comparison-table {
+                max-width: 560px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- REMINDER POPUP -->
+    <div class="reminder-popup" id="reminderPopup">
+        <button class="reminder-close" onclick="closeReminder()">✕</button>
+        <div id="reminderText">💪 Зал лучше шишек! Иди тренируйся!</div>
+    </div>
+
+    <!-- HOME PAGE -->
+    <div id="page-home" class="page active">
+        <div class="header">
+            <div class="header-top">
+                <div class="logo">🔥 IRON GYM</div>
+                <div class="user-avatar" onclick="showStats()">💪</div>
+            </div>
+        </div>
+
+        <!-- Motivation -->
+        <div class="motivation-card" onclick="newQuote()">
+            <div class="motivation-quote" id="quoteText">
+                «Никаких больше шишек — только спорт! 💪»
+            </div>
+            <div class="motivation-author" id="quoteAuthor">— Чистый разум, сильное тело</div>
+            <button class="motivation-refresh" onclick="event.stopPropagation(); newQuote()">🔄</button>
+        </div>
+
+        <!-- ANTI DRUG BANNER -->
+        <div class="anti-banner">
+            <div class="anti-banner-icon">🚫🌿 → 💪🏆</div>
+            <div class="anti-banner-title">Зал лучше шишек!</div>
+            <div class="anti-banner-text">
+                Пока кто-то убивает здоровье — <span class="anti-banner-highlight">ты строишь тело</span>. 
+                Каждая тренировка — это натуральный кайф от эндорфинов, дофамина и серотонина. 
+                <span class="anti-banner-highlight">Настоящий приход — после тяжёлого приседа!</span>
+            </div>
+            <div class="anti-facts">
+                <div class="anti-fact">
+                    <div class="anti-fact-icon">🧠</div>
+                    <div class="anti-fact-value">+300%</div>
+                    <div class="anti-fact-text">Дофамин после тренировки</div>
+                </div>
+                <div class="anti-fact">
+                    <div class="anti-fact-icon">💪</div>
+                    <div class="anti-fact-value">100%</div>
+                    <div class="anti-fact-text">Натуральная сила без дряни</div>
+                </div>
+                <div class="anti-fact">
+                    <div class="anti-fact-icon">😴</div>
+                    <div class="anti-fact-value">+45%</div>
+                    <div class="anti-fact-text">Качество сна от спорта</div>
+                </div>
+                <div class="anti-fact">
+                    <div class="anti-fact-icon">⚡</div>
+                    <div class="anti-fact-value">∞</div>
+                    <div class="anti-fact-text">Энергия и уверенность</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clean streak -->
+        <div class="clean-streak-card">
+            <div class="clean-streak-icon">🛡️</div>
+            <div class="clean-streak-info">
+                <div class="clean-streak-title">Чистый образ жизни</div>
+                <div class="clean-streak-text">Каждый день без дряни — победа. Качай тело, а не трать здоровье впустую!</div>
+            </div>
+            <div class="clean-streak-days">
+                <div class="clean-streak-number" id="cleanDays">0</div>
+                <div class="clean-streak-label">дней чистоты</div>
+            </div>
+        </div>
+
+        <!-- Comparison table -->
+        <div class="comparison-table">
+            <div class="comparison-header">
+                <div class="comparison-col-good">
+                    <div class="comparison-col-title">💪 ЗАЛ даёт</div>
+                </div>
+                <div class="comparison-col-bad">
+                    <div class="comparison-col-title">🚫 Шишки забирают</div>
+                </div>
+            </div>
+            <div class="comparison-row">
+                <div class="comparison-cell">✅ Сильное тело</div>
+                <div class="comparison-cell">❌ Слабость и лень</div>
+            </div>
+            <div class="comparison-row">
+                <div class="comparison-cell">✅ Ясный разум</div>
+                <div class="comparison-cell">❌ Затуманенную голову</div>
+            </div>
+            <div class="comparison-row">
+                <div class="comparison-cell">✅ Уверенность в себе</div>
+                <div class="comparison-cell">❌ Паранойю и тревогу</div>
+            </div>
+            <div class="comparison-row">
+                <div class="comparison-cell">✅ Уважение людей</div>
+                <div class="comparison-cell">❌ Деградацию</div>
+            </div>
+            <div class="comparison-row">
+                <div class="comparison-cell">✅ Натуральный кайф</div>
+                <div class="comparison-cell">❌ Зависимость</div>
+            </div>
+            <div class="comparison-row">
+                <div class="comparison-cell">✅ Здоровое сердце</div>
+                <div class="comparison-cell">❌ Проблемы со здоровьем</div>
+            </div>
+            <div class="comparison-row">
+                <div class="comparison-cell">✅ Крепкий сон</div>
+                <div class="comparison-cell">❌ Бессонницу</div>
+            </div>
+            <div class="comparison-row">
+                <div class="comparison-cell">✅ Деньги на мечту</div>
+                <div class="comparison-cell">❌ Потраченные деньги</div>
+            </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="section">
+            <div class="section-title">
+                <span class="emoji">🏋️</span> Группы мышц
+            </div>
+            <div class="categories-scroll">
+                <div class="category-card chest" onclick="showCategory('chest')">
+                    <div class="category-icon">💪</div>
+                    <div>
+                        <div class="category-name">Грудь</div>
+                        <div class="category-count">6 упражнений</div>
+                    </div>
+                </div>
+                <div class="category-card back" onclick="showCategory('back')">
+                    <div class="category-icon">🔙</div>
+                    <div>
+                        <div class="category-name">Спина</div>
+                        <div class="category-count">6 упражнений</div>
+                    </div>
+                </div>
+                <div class="category-card legs" onclick="showCategory('legs')">
+                    <div class="category-icon">🦵</div>
+                    <div>
+                        <div class="category-name">Ноги</div>
+                        <div class="category-count">6 упражнений</div>
+                    </div>
+                </div>
+                <div class="category-card shoulders" onclick="showCategory('shoulders')">
+                    <div class="category-icon">🏔️</div>
+                    <div>
+                        <div class="category-name">Плечи</div>
+                        <div class="category-count">5 упражнений</div>
+                    </div>
+                </div>
+                <div class="category-card arms" onclick="showCategory('arms')">
+                    <div class="category-icon">💪</div>
+                    <div>
+                        <div class="category-name">Руки</div>
+                        <div class="category-count">6 упражнений</div>
+                    </div>
+                </div>
+                <div class="category-card core" onclick="showCategory('core')">
+                    <div class="category-icon">🎯</div>
+                    <div>
+                        <div class="category-name">Пресс</div>
+                        <div class="category-count">4 упражнения</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Programs -->
+        <div class="section">
+            <div class="section-title">
+                <span class="emoji">📋</span> Программы тренировок
+            </div>
+            <div class="program-card" onclick="showProgram('fullbody')">
+                <div class="program-header">
+                    <div class="program-title">🔥 Фулбади для новичков</div>
+                    <span class="program-badge badge-beginner">Начинающий</span>
+                </div>
+                <div class="program-info">
+                    <span>⏱️ 60 мин</span>
+                    <span>📊 8 упражнений</span>
+                    <span>📅 3 раза/нед</span>
+                </div>
+            </div>
+            <div class="program-card" onclick="showProgram('push')">
+                <div class="program-header">
+                    <div class="program-title">💥 Push Day (Жим)</div>
+                    <span class="program-badge badge-intermediate">Средний</span>
+                </div>
+                <div class="program-info">
+                    <span>⏱️ 50 мин</span>
+                    <span>📊 6 упражнений</span>
+                    <span>🎯 Грудь, плечи, трицепс</span>
+                </div>
+            </div>
+            <div class="program-card" onclick="showProgram('pull')">
+                <div class="program-header">
+                    <div class="program-title">🔗 Pull Day (Тяга)</div>
+                    <span class="program-badge badge-intermediate">Средний</span>
+                </div>
+                <div class="program-info">
+                    <span>⏱️ 50 мин</span>
+                    <span>📊 6 упражнений</span>
+                    <span>🎯 Спина, бицепс</span>
+                </div>
+            </div>
+            <div class="program-card" onclick="showProgram('legs_day')">
+                <div class="program-header">
+                    <div class="program-title">🦵 Leg Day (Ноги)</div>
+                    <span class="program-badge badge-advanced">Продвинутый</span>
+                </div>
+                <div class="program-info">
+                    <span>⏱️ 65 мин</span>
+                    <span>📊 7 упражнений</span>
+                    <span>🎯 Квадрицепс, бицепс бедра</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily tip -->
+        <div class="section">
+            <div class="section-title">
+                <span class="emoji">⚡</span> Совет дня
+            </div>
+            <div class="tips-box">
+                <div class="tips-title">💡 Знал ли ты?</div>
+                <div class="tips-text" id="dailyTip">
+                    Мышцы растут не во время тренировки, а во время отдыха. Спи минимум 7-8 часов для максимального восстановления.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXERCISES PAGE -->
+    <div id="page-exercises" class="page">
+        <div class="header">
+            <div class="header-top">
+                <div class="logo">📖 Упражнения</div>
+            </div>
+        </div>
+
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" placeholder="Найти упражнение..." oninput="filterExercises(this.value)">
+        </div>
+
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="filterByGroup('all', this)">Все</button>
+            <button class="filter-tab" onclick="filterByGroup('chest', this)">Грудь</button>
+            <button class="filter-tab" onclick="filterByGroup('back', this)">Спина</button>
+            <button class="filter-tab" onclick="filterByGroup('legs', this)">Ноги</button>
+            <button class="filter-tab" onclick="filterByGroup('shoulders', this)">Плечи</button>
+            <button class="filter-tab" onclick="filterByGroup('arms', this)">Руки</button>
+            <button class="filter-tab" onclick="filterByGroup('core', this)">Пресс</button>
+        </div>
+
+        <div class="section" id="exercisesList"></div>
+    </div>
+
+    <!-- WORKOUT PAGE -->
+    <div id="page-workout" class="page">
+        <div class="header">
+            <button class="back-btn" onclick="switchPage('home')">← Назад</button>
+            <div class="workout-detail-title" id="workoutTitle">Фулбади</div>
+            <div class="workout-detail-subtitle" id="workoutSubtitle">Тренировка на всё тело</div>
+        </div>
+        <div class="section" id="workoutExercises"></div>
+        <button class="start-workout-btn" id="startWorkoutBtn" onclick="startWorkout()">🚀 Начать тренировку</button>
+    </div>
+
+    <!-- TIMER PAGE -->
+    <div id="page-timer" class="page">
+        <div class="header">
+            <div class="header-top">
+                <div class="logo">⏱️ Таймер отдыха</div>
+            </div>
+        </div>
+
+        <div class="timer-container">
+            <div class="timer-circle">
+                <svg>
+                    <circle id="timerProgress" cx="129" cy="129" r="126.5"></circle>
+                </svg>
+                <div class="timer-display" id="timerDisplay">1:30</div>
+                <div class="timer-label">отдых между подходами</div>
+            </div>
+
+            <div class="timer-presets">
+                <button class="timer-preset" onclick="setTimer(30, this)">0:30</button>
+                <button class="timer-preset" onclick="setTimer(60, this)">1:00</button>
+                <button class="timer-preset active" onclick="setTimer(90, this)">1:30</button>
+                <button class="timer-preset" onclick="setTimer(120, this)">2:00</button>
+                <button class="timer-preset" onclick="setTimer(180, this)">3:00</button>
+                <button class="timer-preset" onclick="setTimer(300, this)">5:00</button>
+            </div>
+
+            <div class="timer-controls">
+                <button class="timer-btn reset" onclick="resetTimer()">↺</button>
+                <button class="timer-btn start" id="timerStartBtn" onclick="toggleTimer()">▶</button>
+            </div>
+        </div>
+
+        <div class="motivation-card" onclick="newQuote()" style="margin-top: 10px;">
+            <div class="motivation-quote" id="timerQuote" style="font-size: 14px;">
+                «Никаких больше шишек — только спорт! 💪»
+            </div>
+            <div class="motivation-author" id="timerQuoteAuthor">— Чистый разум, сильное тело</div>
+        </div>
+    </div>
+
+    <!-- STATS PAGE -->
+    <div id="page-stats" class="page">
+        <div class="header">
+            <div class="header-top">
+                <div class="logo">📊 Статистика</div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🏋️</div>
+                <div class="stat-value" id="totalWorkouts">0</div>
+                <div class="stat-label">Тренировок</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-value" id="totalTime">0</div>
+                <div class="stat-label">Минут</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-value" id="currentStreak">0</div>
+                <div class="stat-label">Дней подряд</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-value" id="totalExercises">0</div>
+                <div class="stat-label">Упражнений</div>
+            </div>
+        </div>
+
+        <!-- Clean days stat -->
+        <div class="clean-streak-card" style="margin: 0 20px 25px;">
+            <div class="clean-streak-icon">🛡️</div>
+            <div class="clean-streak-info">
+                <div class="clean-streak-title">Дней чистой жизни</div>
+                <div class="clean-streak-text">Зал вместо дряни. Ты на правильном пути, брат!</div>
+            </div>
+            <div class="clean-streak-days">
+                <div class="clean-streak-number" id="cleanDaysStats">0</div>
+                <div class="clean-streak-label">дней 💪</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <span class="emoji">📅</span> Последние тренировки
+            </div>
+            <div id="workoutLog">
+                <div style="text-align: center; color: var(--text-muted); padding: 40px 0;">
+                    <div style="font-size: 48px; margin-bottom: 10px;">🏋️</div>
+                    <div>Начни тренироваться и здесь появится твоя история!</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="motivation-card" onclick="newQuote()">
+            <div class="motivation-quote" id="statsQuote" style="font-size: 14px;">
+                «Дисциплина — это мост между целями и достижениями.»
+            </div>
+            <div class="motivation-author" id="statsQuoteAuthor">— Джим Рон</div>
+            <button class="motivation-refresh" onclick="event.stopPropagation(); newQuote()">🔄</button>
+        </div>
+    </div>
+
+    <!-- ACTIVE WORKOUT BAR -->
+    <div class="active-workout-bar" id="activeWorkoutBar">
+        <div>
+            <div class="active-workout-info" id="activeWorkoutName">Тренировка</div>
+            <div class="active-workout-time" id="activeWorkoutTime">00:00</div>
+        </div>
+        <button class="finish-btn" onclick="finishWorkout()">Завершить ✓</button>
+    </div>
+
+    <!-- COMPLETION MODAL -->
+    <div class="modal-overlay" id="completionModal">
+        <div class="modal">
+            <div class="modal-icon">🎉</div>
+            <div class="modal-title">Отличная работа!</div>
+            <div class="modal-text" id="completionText">
+                Ты завершил тренировку! Продолжай в том же духе!
+            </div>
+            <div class="motivation-quote" id="completionQuote" style="font-size: 13px; margin-bottom: 20px; color: var(--accent);"></div>
+            <button class="modal-btn" onclick="closeModal()">Круто! 💪</button>
+        </div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+        <button class="nav-item active" onclick="switchPage('home')" id="nav-home">
+            <span class="nav-icon">🏠</span>Главная
+        </button>
+        <button class="nav-item" onclick="switchPage('exercises')" id="nav-exercises">
+            <span class="nav-icon">📖</span>Упражнения
+        </button>
+        <button class="nav-item" onclick="switchPage('timer')" id="nav-timer">
+            <span class="nav-icon">⏱️</span>Таймер
+        </button>
+        <button class="nav-item" onclick="switchPage('stats')" id="nav-stats">
+            <span class="nav-icon">📊</span>Прогресс
+        </button>
+    </nav>
+
+    <script>
+        // ===== DATA =====
+        const quotes = [
+            { text: "«Никаких больше шишек — только спорт! 💪»", author: "— Чистый разум, сильное тело" },
+            { text: "«Зал лучше шишек. Точка. Без вариантов.»", author: "— Железная воля" },
+            { text: "«Пока другие дымят — ты жмёшь. Пока другие тупят — ты растёшь.»", author: "— Путь воина" },
+            { text: "«Лучший приход — после тяжёлого приседа на 8 повторений.»", author: "— Натуральный кайф" },
+            { text: "«Шишки делают слабым. Штанга делает сильным. Выбор очевиден.»", author: "— Зал ждёт" },
+            { text: "«Эндорфины после тренировки — единственный допинг, который тебе нужен.»", author: "— Наука" },
+            { text: "«Каждый подход — это удар по слабости. Каждый повтор — победа над собой.»", author: "— Путь чемпиона" },
+            { text: "«Не трать жизнь на дым. Построй тело, которым будешь гордиться.»", author: "— Здравый смысл" },
+            { text: "«Боль временна. Гордость за себя — навсегда.»", author: "— Зал ждёт" },
+            { text: "«Не считай дни. Делай так, чтобы каждый день считался.»", author: "— Мухаммед Али" },
+            { text: "«Тело достигает того, во что верит разум.»", author: "— Наполеон Хилл" },
+            { text: "«Единственная плохая тренировка — та, которой не было.»", author: "— Неизвестный атлет" },
+            { text: "«Ты не найдёшь время для тренировки. Ты его создашь.»", author: "— Зал ждёт" },
+            { text: "«Дисциплина — это мост между целями и достижениями.»", author: "— Джим Рон" },
+            { text: "«Успех — это сумма маленьких усилий, повторяемых изо дня в день.»", author: "— Роберт Кольер" },
+            { text: "«Не жди мотивации. Начни — и мотивация придёт.»", author: "— Зал ждёт" },
+            { text: "«Твоё тело может почти всё. Убеждать нужно разум.»", author: "— Зал ждёт" },
+            { text: "«Если это не вызывает трудностей, это не меняет тебя.»", author: "— Фред ДеВито" },
+            { text: "«Чем тяжелее бой, тем слаще победа.»", author: "— Лес Браун" },
+            { text: "«Пот — это жир, который плачет.»", author: "— Зал ждёт" },
+            { text: "«Сдаться можно всегда. Попробуй сегодня не сдаваться.»", author: "— Зал ждёт" },
+            { text: "«Никто не пожалел, что сходил на тренировку.»", author: "— Зал ждёт" },
+            { text: "«Выбирай: минутный кайф от дряни или уважение к себе на всю жизнь.»", author: "— Железная логика" },
+            { text: "«Железо не предаст. Железо не обманет. Железо сделает тебя лучше.»", author: "— Зал — лучший друг" },
+            { text: "«Твои мышцы — твоя броня. Твоя воля — твоё оружие.»", author: "— Воин" },
+            { text: "«Зал — это терапия. Штанга — психолог. Пот — слёзы слабости.»", author: "— Истина" },
+            { text: "«Наркотики отнимают будущее. Спорт его создаёт.»", author: "— Факт" },
+            { text: "«Один час в зале > целый день в дыму.»", author: "— Математика жизни" },
+        ];
+
+        const reminderMessages = [
+            "💪 Зал лучше шишек! Иди качайся!",
+            "🏋️ Вместо косяка — возьми штангу!",
+            "🔥 Настоящие пацаны жмут от груди, а не дымят!",
+            "💯 Эндорфины от зала круче любых шишек!",
+            "🚫🌿 Брось дрянь — возьми гантели!",
+            "⚡ Качок > торчок. Это аксиома!",
+            "🛡️ Спорт — антидепрессант без побочек!",
+            "🏆 Лучший кайф — видеть прогресс в зеркале!",
+            "💪 Штанга даёт уверенность. Шишки — паранойю.",
+            "🔥 Присед 100 кг вставляет сильнее любых шишек!",
+        ];
+
+        const dailyTips = [
+            "Мышцы растут не во время тренировки, а во время отдыха. Спи минимум 7-8 часов.",
+            "Пей воду до, во время и после тренировки. Обезвоживание снижает силу на 20%!",
+            "Разминка 5-10 минут перед тренировкой снижает риск травмы на 50%.",
+            "Белок — строительный материал мышц. Ешь 1.6-2.2 г белка на кг веса тела.",
+            "Прогрессия нагрузки — ключ к росту. Увеличивай вес каждую неделю.",
+            "Тренировка повышает дофамин на 300% — лучше любых веществ!",
+            "Техника важнее веса. Правильно с малым весом > неправильно с большим.",
+            "Спорт снижает тревогу и депрессию лучше любых таблеток — доказано наукой!",
+            "Не пропускай ноги! Приседания повышают выработку тестостерона.",
+            "После тренировки мозг выделяет эндорфины — натуральный кайф без последствий!",
+        ];
+
+        const exercises = {
+            chest: [
+                {
+                    name: "Жим штанги лёжа", icon: "🏋️",
+                    gradient: "linear-gradient(135deg, #ff4d4d, #ff8800)",
+                    muscle: "Грудные, трицепс, передние дельты", sets: "4 × 8-12",
+                    technique: [
+                        "Лягте на скамью, стопы плотно на полу. Лопатки сведены, грудь выгнута.",
+                        "Возьмите штангу хватом чуть шире плеч. Снимите со стоек.",
+                        "На вдохе опустите штангу к нижней части груди. Локти 45° к телу.",
+                        "На выдохе мощно выжмите вверх, не выпрямляя локти полностью."
+                    ],
+                    tips: "Не отрывайте таз от скамьи. Используйте страховку. Контролируйте негативную фазу 2-3 секунды."
+                },
+                {
+                    name: "Жим гантелей наклонная скамья", icon: "🔥",
+                    gradient: "linear-gradient(135deg, #ff8800, #ffcc00)",
+                    muscle: "Верх груди, передние дельты", sets: "3 × 10-12",
+                    technique: [
+                        "Скамья под углом 30-45°. Упритесь спиной.",
+                        "Гантели у плеч, ладони вперёд.",
+                        "Выжмите вверх, сводя в верхней точке.",
+                        "Медленно опустите, растягивая грудные."
+                    ],
+                    tips: "Угол более 45° перенесёт нагрузку на плечи."
+                },
+                {
+                    name: "Разводка гантелей лёжа", icon: "🦋",
+                    gradient: "linear-gradient(135deg, #ff4d4d, #cc0066)",
+                    muscle: "Грудные (растяжение)", sets: "3 × 12-15",
+                    technique: [
+                        "Лягте, гантели над грудью на вытянутых руках.",
+                        "Слегка согните локти и зафиксируйте.",
+                        "Разведите руки в стороны дугообразным движением.",
+                        "Сведите руки обратно, как обнимая дерево."
+                    ],
+                    tips: "Не опускайте ниже уровня плеч. Используйте умеренный вес."
+                },
+                {
+                    name: "Отжимания на брусьях", icon: "⬇️",
+                    gradient: "linear-gradient(135deg, #7b2ff7, #ff4d4d)",
+                    muscle: "Нижняя часть груди, трицепс", sets: "3 × 8-15",
+                    technique: [
+                        "Упор на брусьях, руки прямые.",
+                        "Наклоните корпус вперёд на 15-20°.",
+                        "Согните руки до 90° в локтях.",
+                        "Отожмитесь вверх."
+                    ],
+                    tips: "Наклон вперёд — грудь. Вертикально — трицепс."
+                },
+                {
+                    name: "Сведение рук в кроссовере", icon: "🔗",
+                    gradient: "linear-gradient(135deg, #00d4ff, #7b2ff7)",
+                    muscle: "Внутренняя часть груди", sets: "3 × 12-15",
+                    technique: [
+                        "Встаньте между блоков, возьмите рукоятки.",
+                        "Шаг вперёд, наклоните корпус.",
+                        "Сведите руки перед собой дугой.",
+                        "Задержитесь, затем разведите."
+                    ],
+                    tips: "Меняйте высоту блоков для разных частей груди."
+                },
+                {
+                    name: "Пуловер с гантелей", icon: "🔄",
+                    gradient: "linear-gradient(135deg, #00ff88, #00d4ff)",
+                    muscle: "Грудные, широчайшие", sets: "3 × 12-15",
+                    technique: [
+                        "Лягте поперёк скамьи верхней частью спины.",
+                        "Гантель двумя руками над грудью.",
+                        "Опустите за голову, растягивая грудь.",
+                        "Верните в исходное."
+                    ],
+                    tips: "Отлично для расширения грудной клетки."
+                }
+            ],
+            back: [
+                {
+                    name: "Подтягивания", icon: "🔝",
+                    gradient: "linear-gradient(135deg, #7b2ff7, #00d4ff)",
+                    muscle: "Широчайшие, бицепс", sets: "4 × 6-12",
+                    technique: [
+                        "Хват шире плеч на перекладине.",
+                        "Из виса начните подтягивание.",
+                        "Подбородок выше перекладины.",
+                        "Медленно опуститесь полностью."
+                    ],
+                    tips: "Не раскачивайтесь. Используйте резинку если тяжело."
+                },
+                {
+                    name: "Тяга штанги в наклоне", icon: "🏋️",
+                    gradient: "linear-gradient(135deg, #ff4d4d, #7b2ff7)",
+                    muscle: "Широчайшие, ромбовидные", sets: "4 × 8-12",
+                    technique: [
+                        "Наклон 45°, спина прямая, колени согнуты.",
+                        "Штанга хватом сверху шире плеч.",
+                        "Подтяните к низу живота, сводя лопатки.",
+                        "Медленно опустите."
+                    ],
+                    tips: "Спина ВСЕГДА прямая! Тяните лопатками."
+                },
+                {
+                    name: "Тяга верхнего блока", icon: "⬇️",
+                    gradient: "linear-gradient(135deg, #00d4ff, #0066ff)",
+                    muscle: "Широчайшие", sets: "3 × 10-12",
+                    technique: [
+                        "Сядьте, бёдра под валиками.",
+                        "Широкий хват сверху.",
+                        "Потяните к верхней части груди.",
+                        "Сведите лопатки, медленно верните."
+                    ],
+                    tips: "Альтернатива подтягиваниям. Тяните локтями."
+                },
+                {
+                    name: "Тяга гантели в наклоне", icon: "💪",
+                    gradient: "linear-gradient(135deg, #ff8800, #ff4d4d)",
+                    muscle: "Широчайшие, ромбовидные", sets: "3 × 10-12",
+                    technique: [
+                        "Колено и рука на скамье, спина параллельна полу.",
+                        "Гантель свисает вниз.",
+                        "Подтяните к поясу, локоть вверх.",
+                        "Сведите лопатку, опустите."
+                    ],
+                    tips: "Не вращайте корпус. Задержитесь вверху."
+                },
+                {
+                    name: "Становая тяга", icon: "🔥",
+                    gradient: "linear-gradient(135deg, #ff4d4d, #cc0000)",
+                    muscle: "Разгибатели спины, ягодицы", sets: "4 × 5-8",
+                    technique: [
+                        "Гриф над серединой стопы, ноги на ширине плеч.",
+                        "Присядьте, хват на ширине плеч, спина прямая.",
+                        "Встаньте, выпрямляя ноги и спину.",
+                        "Контролируемо опустите."
+                    ],
+                    tips: "Базовое упражнение. Начинайте с малого веса!"
+                },
+                {
+                    name: "Гиперэкстензия", icon: "🔙",
+                    gradient: "linear-gradient(135deg, #00ff88, #00d4ff)",
+                    muscle: "Разгибатели спины, ягодицы", sets: "3 × 15-20",
+                    technique: [
+                        "Лягте на тренажёр лицом вниз.",
+                        "Руки за головой или на груди.",
+                        "Опустите корпус вниз.",
+                        "Поднимите до горизонтали."
+                    ],
+                    tips: "Не переразгибайтесь! Поднимайтесь до горизонтали."
+                }
+            ],
+            legs: [
+                {
+                    name: "Приседания со штангой", icon: "🦵",
+                    gradient: "linear-gradient(135deg, #00ff88, #00d4ff)",
+                    muscle: "Квадрицепс, ягодицы, кор", sets: "4 × 6-10",
+                    technique: [
+                        "Гриф на верхней части трапеций.",
+                        "Ноги на ширине плеч, носки наружу.",
+                        "Сядьте, отводя таз назад, колени по носкам.",
+                        "До параллели, затем встаньте."
+                    ],
+                    tips: "Король упражнений! Спина прямая, пятки на полу."
+                },
+                {
+                    name: "Жим ногами", icon: "🦿",
+                    gradient: "linear-gradient(135deg, #00d4ff, #7b2ff7)",
+                    muscle: "Квадрицепс, ягодицы", sets: "4 × 10-12",
+                    technique: [
+                        "Спина прижата к спинке.",
+                        "Ноги на платформе на ширине плеч.",
+                        "Согните ноги к груди.",
+                        "Выжмите, не распрямляя колени полностью."
+                    ],
+                    tips: "Высокая постановка — ягодицы. Низкая — квадрицепс."
+                },
+                {
+                    name: "Румынская тяга", icon: "🏋️",
+                    gradient: "linear-gradient(135deg, #ff4d4d, #ff8800)",
+                    muscle: "Бицепс бедра, ягодицы", sets: "3 × 10-12",
+                    technique: [
+                        "Штанга хватом сверху, ноги на ширине плеч.",
+                        "Колени слегка согнуты, зафиксированы.",
+                        "Наклон вперёд, таз назад, штанга по ногам.",
+                        "До растяжения бицепса бедра, вернитесь."
+                    ],
+                    tips: "Чувствуйте растяжение задней поверхности. Спина прямая!"
+                },
+                {
+                    name: "Выпады с гантелями", icon: "🚶",
+                    gradient: "linear-gradient(135deg, #7b2ff7, #ff4d4d)",
+                    muscle: "Квадрицепс, ягодицы", sets: "3 × 10-12",
+                    technique: [
+                        "Гантели в руках, встаньте прямо.",
+                        "Широкий шаг вперёд.",
+                        "Оба колена до 90°.",
+                        "Оттолкнитесь и вернитесь."
+                    ],
+                    tips: "Колено не за носок. Корпус вертикально."
+                },
+                {
+                    name: "Разгибание ног", icon: "📐",
+                    gradient: "linear-gradient(135deg, #ffcc00, #ff8800)",
+                    muscle: "Квадрицепс (изоляция)", sets: "3 × 12-15",
+                    technique: [
+                        "Сядьте, спина прижата.",
+                        "Валик на нижней части голеней.",
+                        "Разогните ноги полностью.",
+                        "Задержитесь, медленно опустите."
+                    ],
+                    tips: "Без рывков. Контролируйте движение."
+                },
+                {
+                    name: "Сгибание ног", icon: "🔄",
+                    gradient: "linear-gradient(135deg, #00ff88, #ffcc00)",
+                    muscle: "Бицепс бедра (изоляция)", sets: "3 × 12-15",
+                    technique: [
+                        "Лягте лицом вниз, валик на ахиллах.",
+                        "Возьмитесь за рукоятки.",
+                        "Согните ноги, пятки к ягодицам.",
+                        "Задержитесь, медленно опустите."
+                    ],
+                    tips: "Не отрывайте бёдра от скамьи."
+                }
+            ],
+            shoulders: [
+                {
+                    name: "Жим гантелей сидя", icon: "🏔️",
+                    gradient: "linear-gradient(135deg, #ff4d4d, #7b2ff7)",
+                    muscle: "Передние и средние дельты", sets: "4 × 8-12",
+                    technique: [
+                        "Скамья 90°, гантели у плеч.",
+                        "Ладони вперёд, локти в стороны.",
+                        "Выжмите вверх, сводя наверху.",
+                        "Опустите до уровня ушей."
+                    ],
+                    tips: "Не выгибайте спину. Контролируйте вес."
+                },
+                {
+                    name: "Махи гантелями в стороны", icon: "🦅",
+                    gradient: "linear-gradient(135deg, #00d4ff, #7b2ff7)",
+                    muscle: "Средние дельты", sets: "3 × 12-15",
+                    technique: [
+                        "Стоя, гантели по бокам.",
+                        "Локти слегка согнуты.",
+                        "Поднимите в стороны до уровня плеч.",
+                        "Мизинец чуть выше большого пальца."
+                    ],
+                    tips: "Лёгкий вес! Не поднимайте плечи к ушам."
+                },
+                {
+                    name: "Тяга к подбородку", icon: "⬆️",
+                    gradient: "linear-gradient(135deg, #ff8800, #ff4d4d)",
+                    muscle: "Средние дельты, трапеция", sets: "3 × 10-12",
+                    technique: [
+                        "Штанга узким/средним хватом.",
+                        "Руки вытянуты у бёдер.",
+                        "Подтяните вдоль тела к подбородку.",
+                        "Локти ведут движение."
+                    ],
+                    tips: "Широкий хват — дельты. Узкий — трапеции."
+                },
+                {
+                    name: "Махи в наклоне", icon: "🔙",
+                    gradient: "linear-gradient(135deg, #00ff88, #00d4ff)",
+                    muscle: "Задние дельты", sets: "3 × 12-15",
+                    technique: [
+                        "Наклон 60-70°, гантели свисают.",
+                        "Локти слегка согнуты.",
+                        "Разведите в стороны, сводя лопатки.",
+                        "Задержитесь, опустите."
+                    ],
+                    tips: "Лёгкий вес, концентрация на мышце."
+                },
+                {
+                    name: "Жим Арнольда", icon: "💪",
+                    gradient: "linear-gradient(135deg, #ff4d4d, #ffcc00)",
+                    muscle: "Все пучки дельт", sets: "3 × 10-12",
+                    technique: [
+                        "Сидя, гантели у плеч, ладони к себе.",
+                        "Выжимайте, разворачивая кисти.",
+                        "Вверху ладони смотрят вперёд.",
+                        "Опустите, разворачивая обратно."
+                    ],
+                    tips: "Фирменное упражнение Шварценеггера!"
+                }
+            ],
+            arms: [
+                {
+                    name: "Подъём штанги на бицепс", icon: "💪",
+                    gradient: "linear-gradient(135deg, #ff8800, #ffcc00)",
+                    muscle: "Бицепс", sets: "3 × 10-12",
+                    technique: [
+                        "Стоя, штанга хватом снизу.",
+                        "Локти прижаты к корпусу.",
+                        "Согните руки к плечам.",
+                        "Задержитесь, медленно опустите."
+                    ],
+                    tips: "Не раскачивайтесь! EZ-гриф — для запястий."
+                },
+                {
+                    name: "Молотковые сгибания", icon: "🔨",
+                    gradient: "linear-gradient(135deg, #00d4ff, #0066ff)",
+                    muscle: "Бицепс, брахиалис", sets: "3 × 10-12",
+                    technique: [
+                        "Нейтральный хват (ладони к телу).",
+                        "Локти прижаты.",
+                        "Согните, не разворачивая кисти.",
+                        "Медленно опустите."
+                    ],
+                    tips: "Развивает толщину руки."
+                },
+                {
+                    name: "Французский жим", icon: "🇫🇷",
+                    gradient: "linear-gradient(135deg, #7b2ff7, #ff4d4d)",
+                    muscle: "Трицепс", sets: "3 × 10-12",
+                    technique: [
+                        "Лёжа, штанга над грудью.",
+                        "Плечевые кости вертикально.",
+                        "Согните локти, штанга ко лбу.",
+                        "Разогните обратно."
+                    ],
+                    tips: "Локти смотрят в потолок! EZ-гриф удобнее."
+                },
+                {
+                    name: "Разгибание на блоке", icon: "⬇️",
+                    gradient: "linear-gradient(135deg, #ff4d4d, #cc0066)",
+                    muscle: "Трицепс (изоляция)", sets: "3 × 12-15",
+                    technique: [
+                        "Верхний блок, рукоятка.",
+                        "Локти прижаты, предплечья параллельно полу.",
+                        "Разогните руки полностью.",
+                        "Сжимайте трицепс, вернитесь."
+                    ],
+                    tips: "Прямая рукоятка — длинная головка. Канат — латеральная."
+                },
+                {
+                    name: "Концентрированные сгибания", icon: "🎯",
+                    gradient: "linear-gradient(135deg, #00ff88, #00d4ff)",
+                    muscle: "Бицепс (пик)", sets: "3 × 12-15",
+                    technique: [
+                        "Сидя, локоть в бедро.",
+                        "Рука выпрямлена, гантель внизу.",
+                        "Медленно согните, сжимая бицепс.",
+                        "2 секунды вверху, опустите."
+                    ],
+                    tips: "Лучшее для пика бицепса!"
+                },
+                {
+                    name: "Отжимания узким хватом", icon: "🔻",
+                    gradient: "linear-gradient(135deg, #ffcc00, #ff8800)",
+                    muscle: "Трицепс, грудные", sets: "3 × 10-15",
+                    technique: [
+                        "Упор лёжа, руки на ширине плеч.",
+                        "Тело — прямая линия.",
+                        "Согните, локти вдоль корпуса.",
+                        "Отожмитесь вверх."
+                    ],
+                    tips: "Локти назад, не в стороны!"
+                }
+            ],
+            core: [
+                {
+                    name: "Планка", icon: "🧱",
+                    gradient: "linear-gradient(135deg, #00d4ff, #0066ff)",
+                    muscle: "Весь кор", sets: "3 × 30-60 сек",
+                    technique: [
+                        "Упор на предплечьях, локти под плечами.",
+                        "Тело — прямая линия.",
+                        "Напрягите пресс, ягодицы.",
+                        "Держите, дышите ровно."
+                    ],
+                    tips: "Начните с 15 секунд, добавляйте по 5."
+                },
+                {
+                    name: "Скручивания", icon: "🔄",
+                    gradient: "linear-gradient(135deg, #ff4d4d, #ff8800)",
+                    muscle: "Прямая мышца живота", sets: "3 × 15-20",
+                    technique: [
+                        "На спине, колени согнуты.",
+                        "Руки за головой, не тяните шею!",
+                        "Оторвите лопатки, скрутитесь.",
+                        "Задержитесь, опуститесь."
+                    ],
+                    tips: "Только лопатки! Это скручивание, не подъём."
+                },
+                {
+                    name: "Подъём ног в висе", icon: "⬆️",
+                    gradient: "linear-gradient(135deg, #7b2ff7, #00d4ff)",
+                    muscle: "Нижний пресс", sets: "3 × 10-15",
+                    technique: [
+                        "Вис на перекладине.",
+                        "Поднимите прямые ноги до горизонтали.",
+                        "Для усложнения — до перекладины.",
+                        "Медленно опустите."
+                    ],
+                    tips: "Самое эффективное на пресс! Без раскачки."
+                },
+                {
+                    name: "Велосипед", icon: "🚴",
+                    gradient: "linear-gradient(135deg, #00ff88, #ffcc00)",
+                    muscle: "Прямая и косые мышцы", sets: "3 × 20",
+                    technique: [
+                        "На спине, руки за головой, ноги подняты.",
+                        "Правый локоть к левому колену.",
+                        "Выпрямите правую ногу.",
+                        "Меняйте стороны плавно."
+                    ],
+                    tips: "Одно из лучших упражнений на пресс!"
+                }
+            ]
+        };
+
+        const programs = {
+            fullbody: {
+                title: "🔥 Фулбади для новичков",
+                subtitle: "Тренировка на всё тело • 3 раза в неделю",
+                exercises: [
+                    { name: "Приседания со штангой", sets: "3 × 10" },
+                    { name: "Жим штанги лёжа", sets: "3 × 10" },
+                    { name: "Тяга верхнего блока", sets: "3 × 12" },
+                    { name: "Жим гантелей сидя", sets: "3 × 10" },
+                    { name: "Подъём штанги на бицепс", sets: "2 × 12" },
+                    { name: "Разгибание на блоке", sets: "2 × 12" },
+                    { name: "Планка", sets: "3 × 30 сек" },
+                    { name: "Гиперэкстензия", sets: "3 × 15" }
+                ]
+            },
+            push: {
+                title: "💥 Push Day",
+                subtitle: "Грудь, плечи, трицепс",
+                exercises: [
+                    { name: "Жим штанги лёжа", sets: "4 × 8-10" },
+                    { name: "Жим гантелей наклонная", sets: "3 × 10-12" },
+                    { name: "Жим гантелей сидя", sets: "3 × 10" },
+                    { name: "Махи в стороны", sets: "3 × 15" },
+                    { name: "Французский жим", sets: "3 × 12" },
+                    { name: "Разгибание на блоке", sets: "3 × 15" }
+                ]
+            },
+            pull: {
+                title: "🔗 Pull Day",
+                subtitle: "Спина, бицепс",
+                exercises: [
+                    { name: "Подтягивания", sets: "4 × max" },
+                    { name: "Тяга штанги в наклоне", sets: "4 × 8-10" },
+                    { name: "Тяга гантели в наклоне", sets: "3 × 10-12" },
+                    { name: "Махи в наклоне", sets: "3 × 15" },
+                    { name: "Подъём на бицепс", sets: "3 × 10" },
+                    { name: "Молотковые сгибания", sets: "3 × 12" }
+                ]
+            },
+            legs_day: {
+                title: "🦵 Leg Day",
+                subtitle: "Квадрицепс, бицепс бедра, ягодицы",
+                exercises: [
+                    { name: "Приседания со штангой", sets: "4 × 6-8" },
+                    { name: "Жим ногами", sets: "4 × 10-12" },
+                    { name: "Румынская тяга", sets: "3 × 10" },
+                    { name: "Выпады с гантелями", sets: "3 × 12" },
+                    { name: "Разгибание ног", sets: "3 × 15" },
+                    { name: "Сгибание ног", sets: "3 × 15" },
+                    { name: "Подъём на носки", sets: "4 × 15-20" }
+                ]
+            }
+        };
+
+        // ===== STATE =====
+        let currentPage = 'home';
+        let currentFilter = 'all';
+        let timerSeconds = 90;
+        let timerTotal = 90;
+        let timerInterval = null;
+        let timerRunning = false;
+        let workoutActive = false;
+        let workoutStartTime = null;
+        let workoutTimerInterval = null;
+        let currentWorkoutName = '';
+        let stats = JSON.parse(localStorage.getItem('gymStats') || '{"workouts":0,"minutes":0,"streak":0,"exercises":0,"log":[]}');
+        let cleanDaysStart = localStorage.getItem('cleanDaysStart');
+
+        // ===== INIT =====
+        document.addEventListener('DOMContentLoaded', () => {
+            renderExercises();
+            updateStats();
+            randomDailyTip();
+            newQuote();
+            initCleanDays();
+            startReminderSystem();
+        });
+
+        // ===== CLEAN DAYS =====
+        function initCleanDays() {
+            if (!cleanDaysStart) {
+                cleanDaysStart = new Date().toISOString();
+                localStorage.setItem('cleanDaysStart', cleanDaysStart);
+            }
+            updateCleanDays();
+            setInterval(updateCleanDays, 60000);
+        }
+
+        function updateCleanDays() {
+            const start = new Date(cleanDaysStart);
+            const now = new Date();
+            const days = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+            
+            const el1 = document.getElementById('cleanDays');
+            const el2 = document.getElementById('cleanDaysStats');
+            if (el1) el1.textContent = days;
+            if (el2) el2.textContent = days;
+        }
+
+        // ===== REMINDER SYSTEM =====
+        function startReminderSystem() {
+            // Show first reminder after 30 seconds
+            setTimeout(showReminder, 30000);
+            // Then every 10 minutes
+            setInterval(showReminder, 600000);
+        }
+
+        function showReminder() {
+            const msg = reminderMessages[Math.floor(Math.random() * reminderMessages.length)];
+            const popup = document.getElementById('reminderPopup');
+            document.getElementById('reminderText').textContent = msg;
+            popup.classList.add('visible');
+            
+            setTimeout(() => {
+                popup.classList.remove('visible');
+            }, 5000);
+        }
+
+        function closeReminder() {
+            document.getElementById('reminderPopup').classList.remove('visible');
+        }
+
+        // ===== NAVIGATION =====
+        function switchPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('page-' + page).classList.add('active');
+            const navBtn = document.getElementById('nav-' + page);
+            if (navBtn) navBtn.classList.add('active');
+            currentPage = page;
+            window.scrollTo(0, 0);
+        }
+
+        function showStats() { switchPage('stats'); }
+
+        // ===== QUOTES =====
+        function newQuote() {
+            const q = quotes[Math.floor(Math.random() * quotes.length)];
+            ['quoteText','timerQuote','statsQuote'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = q.text;
+            });
+            ['quoteAuthor','timerQuoteAuthor','statsQuoteAuthor'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = q.author;
+            });
+        }
+
+        function randomDailyTip() {
+            document.getElementById('dailyTip').textContent = dailyTips[Math.floor(Math.random() * dailyTips.length)];
+        }
+
+        // ===== EXERCISES =====
+        function renderExercises(filter = 'all', search = '') {
+            const container = document.getElementById('exercisesList');
+            let html = '';
+            const groups = filter === 'all' ? Object.keys(exercises) : [filter];
+            
+            groups.forEach(group => {
+                if (!exercises[group]) return;
+                exercises[group].forEach((ex, idx) => {
+                    if (search && !ex.name.toLowerCase().includes(search.toLowerCase())) return;
+                    html += `
+                        <div class="exercise-card" data-group="${group}">
+                            <div class="exercise-main" onclick="toggleExercise('${group}', ${idx})">
+                                <div class="exercise-icon" style="background: ${ex.gradient}">${ex.icon}</div>
+                                <div class="exercise-info">
+                                    <div class="exercise-name">${ex.name}</div>
+                                    <div class="exercise-muscle">${ex.muscle}</div>
+                                </div>
+                                <button class="exercise-toggle" id="toggle-${group}-${idx}">▼</button>
+                            </div>
+                            <div class="exercise-details" id="details-${group}-${idx}">
+                                <div class="sets-info"><span class="set-badge">📊 ${ex.sets}</span></div>
+                                <div class="technique-title">📝 Техника выполнения</div>
+                                ${ex.technique.map((step, i) => `
+                                    <div class="technique-step">
+                                        <div class="step-number">${i + 1}</div>
+                                        <div class="step-text">${step}</div>
+                                    </div>
+                                `).join('')}
+                                <div class="tips-box">
+                                    <div class="tips-title">⚠️ Важные советы</div>
+                                    <div class="tips-text">${ex.tips}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+            
+            if (!html) html = '<div style="text-align:center; color: var(--text-muted); padding: 40px;">Не найдено 🔍</div>';
+            container.innerHTML = html;
+        }
+
+        function toggleExercise(group, idx) {
+            document.getElementById(`details-${group}-${idx}`).classList.toggle('open');
+            document.getElementById(`toggle-${group}-${idx}`).classList.toggle('open');
+        }
+
+        function filterExercises(search) { renderExercises(currentFilter, search); }
+
+        function filterByGroup(group, btn) {
+            currentFilter = group;
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            const si = document.querySelector('.search-input');
+            renderExercises(group, si ? si.value : '');
+        }
+
+        function showCategory(category) {
+            switchPage('exercises');
+            currentFilter = category;
+            const names = { all:'Все', chest:'Грудь', back:'Спина', legs:'Ноги', shoulders:'Плечи', arms:'Руки', core:'Пресс' };
+            document.querySelectorAll('.filter-tab').forEach(t => {
+                t.classList.remove('active');
+                if (t.textContent.trim() === names[category]) t.classList.add('active');
+            });
+            renderExercises(category);
+        }
+
+        // ===== PROGRAMS =====
+        function showProgram(id) {
+            const p = programs[id];
+            if (!p) return;
+            document.getElementById('workoutTitle').textContent = p.title;
+            document.getElementById('workoutSubtitle').textContent = p.subtitle;
+            currentWorkoutName = p.title;
+            
+            document.getElementById('workoutExercises').innerHTML = p.exercises.map((ex, i) => `
+                <div class="exercise-checkbox" id="workout-ex-${i}" onclick="toggleWorkoutExercise(${i})">
+                    <div class="checkbox" id="checkbox-${i}">✓</div>
+                    <div class="exercise-checkbox-info">
+                        <div class="exercise-checkbox-name">${ex.name}</div>
+                        <div class="exercise-checkbox-sets">${ex.sets}</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('startWorkoutBtn').style.display = 'block';
+            document.getElementById('startWorkoutBtn').textContent = '🚀 Начать тренировку';
+            document.getElementById('startWorkoutBtn').disabled = false;
+            document.getElementById('startWorkoutBtn').style.opacity = '1';
+            switchPage('workout');
+        }
+
+        function toggleWorkoutExercise(idx) {
+            document.getElementById(`workout-ex-${idx}`).classList.toggle('done');
+        }
+
+        // ===== ACTIVE WORKOUT =====
+        function startWorkout() {
+            workoutActive = true;
+            workoutStartTime = Date.now();
+            document.getElementById('activeWorkoutBar').classList.add('visible');
+            document.getElementById('activeWorkoutName').textContent = currentWorkoutName;
+            document.getElementById('startWorkoutBtn').textContent = '🏃 Тренировка идёт...';
+            document.getElementById('startWorkoutBtn').disabled = true;
+            document.getElementById('startWorkoutBtn').style.opacity = '0.6';
+            
+            workoutTimerInterval = setInterval(() => {
+                const e = Math.floor((Date.now() - workoutStartTime) / 1000);
+                document.getElementById('activeWorkoutTime').textContent = 
+                    `${Math.floor(e/60).toString().padStart(2,'0')}:${(e%60).toString().padStart(2,'0')}`;
+            }, 1000);
+        }
+
+        function finishWorkout() {
+            if (!workoutActive) return;
+            const mins = Math.floor((Date.now() - workoutStartTime) / 60000);
+            clearInterval(workoutTimerInterval);
+            workoutActive = false;
+            
+            document.getElementById('activeWorkoutBar').classList.remove('visible');
+            document.getElementById('startWorkoutBtn').textContent = '🚀 Начать тренировку';
+            document.getElementById('startWorkoutBtn').disabled = false;
+            document.getElementById('startWorkoutBtn').style.opacity = '1';
+            
+            const done = document.querySelectorAll('.exercise-checkbox.done').length;
+            const total = document.querySelectorAll('.exercise-checkbox').length;
+            
+            stats.workouts++;
+            stats.minutes += mins || 1;
+            stats.exercises += done;
+            stats.streak++;
+            stats.log.unshift({
+                name: currentWorkoutName,
+                date: new Date().toLocaleDateString('ru-RU'),
+                duration: `${mins || 1} мин`,
+                exercises: `${done}/${total}`
+            });
+            if (stats.log.length > 20) stats.log = stats.log.slice(0, 20);
+            localStorage.setItem('gymStats', JSON.stringify(stats));
+            updateStats();
+            
+            const q = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('completionText').textContent = 
+                `Ты завершил тренировку за ${mins || 1} мин. Выполнено ${done}/${total}. Зал лучше любой дряни! 💪`;
+            document.getElementById('completionQuote').textContent = q.text;
+            document.getElementById('completionModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('completionModal').classList.remove('active');
+            switchPage('home');
+        }
+
+        // ===== TIMER =====
+        function setTimer(seconds, btn) {
+            timerSeconds = seconds;
+            timerTotal = seconds;
+            updateTimerDisplay();
+            resetTimerProgress();
+            if (timerRunning) { clearInterval(timerInterval); timerRunning = false; document.getElementById('timerStartBtn').textContent = '▶'; }
+            document.querySelectorAll('.timer-preset').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function toggleTimer() {
+            if (timerRunning) {
+                clearInterval(timerInterval); timerRunning = false;
+                document.getElementById('timerStartBtn').textContent = '▶';
+            } else {
+                if (timerSeconds <= 0) { timerSeconds = timerTotal; resetTimerProgress(); }
+                timerRunning = true;
+                document.getElementById('timerStartBtn').textContent = '⏸';
+                timerInterval = setInterval(() => {
+                    timerSeconds--;
+                    updateTimerDisplay();
+                    updateTimerProgress();
+                    if (timerSeconds <= 0) {
+                        clearInterval(timerInterval); timerRunning = false;
+                        document.getElementById('timerStartBtn').textContent = '▶';
+                        if (navigator.vibrate) navigator.vibrate([200,100,200,100,200]);
+                        playTimerAlert();
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval); timerRunning = false;
+            timerSeconds = timerTotal; updateTimerDisplay(); resetTimerProgress();
+            document.getElementById('timerStartBtn').textContent = '▶';
+        }
+
+        function updateTimerDisplay() {
+            document.getElementById('timerDisplay').textContent = 
+                `${Math.floor(timerSeconds/60)}:${(timerSeconds%60).toString().padStart(2,'0')}`;
+        }
+
+        function updateTimerProgress() {
+            const c = 2 * Math.PI * 126.5;
+            document.getElementById('timerProgress').style.strokeDashoffset = c * (1 - timerSeconds/timerTotal);
+        }
+
+        function resetTimerProgress() {
+            document.getElementById('timerProgress').style.strokeDashoffset = 0;
+        }
+
+        function playTimerAlert() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                [0,0.2,0.4].forEach(d => {
+                    const o = ctx.createOscillator(), g = ctx.createGain();
+                    o.connect(g); g.connect(ctx.destination);
+                    o.frequency.value = 880; o.type = 'sine'; g.gain.value = 0.3;
+                    o.start(ctx.currentTime + d); o.stop(ctx.currentTime + d + 0.15);
+                });
+            } catch(e) {}
+        }
+
+        // ===== STATS =====
+        function updateStats() {
+            document.getElementById('totalWorkouts').textContent = stats.workouts;
+            document.getElementById('totalTime').textContent = stats.minutes;
+            document.getElementById('currentStreak').textContent = stats.streak;
+            document.getElementById('totalExercises').textContent = stats.exercises;
+            
+            const log = document.getElementById('workoutLog');
+            if (stats.log.length === 0) {
+                log.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:40px 0;">
+                    <div style="font-size:48px;margin-bottom:10px;">🏋️</div>
+                    <div>Начни тренироваться!</div></div>`;
+            } else {
+                log.innerHTML = stats.log.map(e => `
+                    <div class="log-entry">
+                        <div class="log-left">
+                            <div class="log-icon">🏋️</div>
+                            <div>
+                                <div class="log-title">${e.name}</div>
+                                <div class="log-date">${e.date} • ${e.exercises} упр.</div>
+                            </div>
+                        </div>
+                        <div class="log-duration">${e.duration}</div>
+                    </div>
+                `).join('');
+            }
+        }
+    </script>
+</body>
+</html>
